@@ -1,35 +1,11 @@
 # -*- coding: utf-8 -*-
 import dash
-import dash_table
-import plotly.graph_objs as go
 import pandas as pd
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 
 layout = dbc.Container([
-#     dbc.Row(
-#     dbc.Navbar(
-#     [
-#         html.A(
-#             # Use row and col to control vertical alignment of logo / brand
-#             dbc.Row(
-#                 [
-#                     dbc.Col(dbc.NavbarBrand("Navbar", className="ml-2")),
-#                 ],
-#                 align="center",
-#                 no_gutters=True,
-#             ),
-#             href="https://plot.ly",
-#         ),
-#         dbc.NavbarToggler(id="navbar-toggler"),
-#     ],
-#     color="dark",
-#     dark=True,
-#     ),
-#     className="ml-auto flex-nowrap mt-md-0",
-#     align="center",
-# ),
             dbc.Row(
     [
         dbc.Col(

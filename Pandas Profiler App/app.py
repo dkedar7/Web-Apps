@@ -1,17 +1,15 @@
 import dash
-import dash_table
 import plotly.graph_objs as go
 import pandas as pd
 import dash_core_components as dcc
 import dash_html_components as html
-import dash_dangerously_set_inner_html
-
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 
 import base64
 import datetime
 import io
+import os
 
 from layout import layout
 from callbacks import *
@@ -62,4 +60,4 @@ def cb_create_report(contents, filename):
         })
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False,host='0.0.0.0',port=int(os.environ.get('PORT', 8080)))

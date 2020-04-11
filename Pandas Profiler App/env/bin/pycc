@@ -1,0 +1,3 @@
+#!/Users/kedardabhadkar/Documents/GitHub/Web-Apps/Pandas Profiler App/env/bin/python
+from numba.pycc import main
+main()
