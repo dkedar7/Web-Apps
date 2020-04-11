@@ -18,6 +18,7 @@ external_stylesheets = [dbc.themes.BOOTSTRAP]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = layout
+server = app.server
 
 
 @app.callback(Output('output-report', 'children'),
