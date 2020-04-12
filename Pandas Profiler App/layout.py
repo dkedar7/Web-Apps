@@ -5,53 +5,97 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 
-layout = dbc.Container([
-            dbc.Row(
-    [
-        dbc.Col(
-            [
-                html.H1('Get an instant data analysis report of your spreadsheets', style={'text-align':'center', "color":"white",
+
+####### NavBar #######
+# nav_bar = 
+
+####### Header #######
+header = dbc.Col([
+            html.H1('Get an instant data analysis report of your spreadsheets', style={'text-align':'center', "color":"white",
                 "font-family": "Verdana; Gill Sans"}),
-                html.H3('Using the powerful Pandas Profiling library on Python', style={'text-align':'center', "color":"white",
+            html.H3('Using the powerful Pandas Profiling library on Python', style={'text-align':'center', "color":"white",
                 "font-family": "Verdana; Gill Sans"})
-            ]
-        )
-    ],
-    style ={"padding":"10% 0% 10% 0%", "background-color":"#3CB371"}
-),
-        dbc.Row(
-            [
+            ])
+
+####### Upload button #######
+upload_button = dbc.Col([
                 dcc.Upload(
         id='upload-data',
-        children=html.Div([
+        children=dbc.Col([
             'Drag and Drop or ',
             html.A('Select Files')
         ]),
         style={
-            'width': '100%',
-            'height': '60px',
             'lineHeight': '60px',
             'borderWidth': '1px',
             'borderStyle': 'dashed',
             'borderRadius': '5px',
             'textAlign': 'center',
             'margin': '10px'
-        },
-        # Allow multiple files to be uploaded
-        multiple=False
+        }
     ),
+            ])
+
+####### Parameter control #######
+
+parameters = dbc.Col(
+    [
+        dbc.FormGroup(
+            [
+                dbc.Label('Skip rows'),
+                dcc.Dropdown(id="skiprows",
+                    options = [{"label" : rows, "value" : rows} for rows in range(1,10)]
+                            ),
+                dbc.Button("Analyze", id = 'analyze-button', size="lg",
+                    color="primary", disabled = False,
+                    className = "mt-3 mr-3"),
+
+                dbc.Button("Download Report", id = 'download-button', size="lg",
+                    color="primary", disabled = False,
+                    className = "mt-3 mr-3", href = "", external_link=True)
             ]
-        ),
-        dbc.Row(id='output-report',
+        )
+    ],
+    width = 4
+)
+
+####### Analysis report iframe #######
+
+spinner = dbc.Spinner(color="danger", id='spinner')
+
+report_iframe = dbc.Col(id='output-report',
         style={
-            'width': '100%',
-            'height': '1000px',
+            'width': '80%',
+            'height': '800px',
             'lineHeight': '60px',
             'borderWidth': '1px',
             'borderWidth': '1px',
             'borderRadius': '5px',
             'textAlign': 'center',
             'margin': '10px'
-        })
+        }, loading_state = {'is_loading': True,
+        'component_name':'spinner'})
+
+####### Layout #######
+
+layout = dbc.Container([
+    dbc.Row(
+        [
+            header
+        ]
+   ,style ={"padding":"5% 0% 5% 0%", "background-color":"#3CB371"}
+    ),
+    dbc.Row(
+        [
+            upload_button
+        ]
+    ),
+    dbc.Row(id="upload_intimation"),
+    dbc.Row(
+        [
+            parameters,
+            report_iframe
+        ]
+    )  
 ]
-, fluid = False)
+, fluid = True)
