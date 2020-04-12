@@ -42,10 +42,20 @@ parameters = dbc.Col(
     [
         dbc.FormGroup(
             [
+                html.Div(id="select-sheet-div",
+                    children=
+                    [
+                        dbc.Label('Select sheet'),
+                        dcc.Dropdown(id="select-sheet")
+                    ],
+                    style= {'display': 'none'}
+                ),
                 dbc.Label('Skip rows'),
                 dcc.Dropdown(id="skiprows",
-                    options = [{"label" : rows, "value" : rows} for rows in range(1,10)]
+                    options = [{"label" : rows, "value" : rows} for rows in range(1,11)],
+                                value = 0
                             ),
+
                 dbc.Button("Analyze", id = 'analyze-button', size="lg",
                     color="primary", disabled = False,
                     className = "mt-3 mr-3"),

@@ -9,6 +9,7 @@ from urllib.parse import quote as urlquote
 from flask import Flask, send_from_directory
 
 import base64
+import xlrd
 import datetime
 import io
 import os
@@ -35,7 +36,19 @@ def cb_upload_intimation(filename):
             ]
         )
 
-#### Decide if the "anlyze" and "downloads" buttons should be active
+#### Choice of sheets if file is xlsx
+@app.callback([Output('select-sheet-div', 'style'),
+                Output('select-sheet', 'options')],
+              [Input('upload-data', 'filename')])
+def cb_sheet_dropdown(filename):
+    if filename is not None and 'xls' in filename.lower():
+        file_ = xlrd.open_workbook(filename, on_demand=True)
+        options = [{"label" : sheet, "value" : sheet} for sheet in file_.sheet_names()]
+        return {'display': 'inline'}, options
+    else:
+        return {'display': 'none'}, []
+
+#### Decide if the "anlayze" and "downloads" buttons should be active
 @app.callback([Output('analyze-button', 'disabled'),
                 Output('download-button', 'disabled')],
               [Input('upload-data', 'filename')])
@@ -54,28 +67,51 @@ def download(path):
 def cb_download_report(n_clicks):
     if n_clicks is not None:
         return f"_intermediate/{urlquote('report.html')}"
-    else:
-        return ""
 
 
+#### Show report
+global clicks 
+clicks = 1
 
-#### Shoe report
 @app.callback(Output('output-report', 'children'),
               [Input('upload-data', 'contents'),
-              Input('analyze-button', 'n_clicks')],
+              Input('analyze-button', 'n_clicks'),
+              Input('skiprows', 'value'),
+              Input('select-sheet', 'value')],
               [State('upload-data', 'filename')])
-def cb_create_report(contents, n_clicks, filename):
+def cb_create_report(contents, n_clicks, skiprows, sheet_name, filename):
+    global clicks
 
-    if contents is not None and filename is not None and n_clicks is not None:
+    if contents is not None and filename is not None and n_clicks is not None and clicks == n_clicks:
+        clicks += 1
+
         content_type, content_string = contents.split(',')
 
         decoded = base64.b64decode(content_string)
         try:
             if 'csv' in filename.lower():
                 # Assume that the user uploaded a CSV file
-                df = pd.read_csv(
-                    io.StringIO(decoded.decode('utf-8')))
 
+                df = pd.read_csv(io.StringIO(decoded.decode('utf-8')),
+                    skiprows = skiprows)
+                valid = True
+
+            elif 'xls' in filename.lower():
+                # Assume that the user uploaded an excel file
+                if sheet_name is None:
+                    sheet_name = 0
+                    
+                df = pd.read_excel(io.BytesIO(decoded),
+                    skiprows = skiprows, sheet_name = sheet_name)
+                valid = True
+
+            else:
+                valid = False
+                return html.Div([
+                'There was an error processing this file.'
+            ])
+
+            if valid:
                 report = create_report(df).to_html()
 
                 with open('_intermediate/report.html', 'w') as file:
@@ -93,27 +129,6 @@ def cb_create_report(contents, n_clicks, filename):
                     'textAlign': 'center',
                     'margin': '10px'
                 })
-
-            elif 'xls' in filename.lower():
-                # Assume that the user uploaded an excel file
-                df = pd.read_excel(io.BytesIO(decoded))
-
-                return html.Iframe(srcDoc = create_report(df).to_html(),
-                style={
-                    'width': '100%',
-                    'height': '100%',
-                    'lineHeight': '60px',
-                    'borderWidth': '1px',
-                    'borderStyle': 'dashed',
-                    'borderRadius': '5px',
-                    'textAlign': 'center',
-                    'margin': '10px'
-                })
-
-            else:
-                return html.Div([
-                'There was an error processing this file.'
-            ])
 
         except Exception as e:
             print(e)
