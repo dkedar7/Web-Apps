@@ -4,3 +4,4 @@ numpy==1.17.4
 dash
 pandas_profiling
 dash_bootstrap_components
+xlrd

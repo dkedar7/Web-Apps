@@ -57,16 +57,16 @@ def cb_button_active(filename):
 
 #### Download report
 
-@server.route("/_intermediate/<path:path>")
-def download(path):
+@server.route("/download")
+def download():
     """Serve a file from the upload directory."""
-    return send_from_directory("_intermediate", path, as_attachment=True)
+    return send_from_directory("_intermediate", "report.html", as_attachment=True)
 
 @app.callback(Output('download-button', 'href'),
               [Input('analyze-button', 'n_clicks')])
 def cb_download_report(n_clicks):
     if n_clicks is not None:
-        return f"_intermediate/{urlquote('report.html')}"
+        return "/download"
 
 
 #### Show report
@@ -100,7 +100,7 @@ def cb_create_report(contents, n_clicks, skiprows, sheet_name, filename):
                 # Assume that the user uploaded an excel file
                 if sheet_name is None:
                     sheet_name = 0
-                    
+
                 df = pd.read_excel(io.BytesIO(decoded),
                     skiprows = skiprows, sheet_name = sheet_name)
                 valid = True
