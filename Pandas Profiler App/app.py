@@ -68,6 +68,12 @@ def cb_download_report(n_clicks):
     if n_clicks is not None:
         return "/download"
 
+##### Spinner callback
+# @app.callback(Output('output-report', 'children'),
+#                 [Input('analyze-button', 'n_clicks')])
+# def cb_report_loading(n_clicks):
+#     if n_clicks is not None:
+#         return 
 
 #### Show report
 global clicks 
