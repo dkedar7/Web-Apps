@@ -89,6 +89,7 @@ report_iframe = dbc.Col(id='output-report',
 ####### Layout #######
 
 layout = dbc.Container([
+    # dcc.Store(id='memory-output'),
     dbc.Row(
         [
             header

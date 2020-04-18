@@ -36,14 +36,17 @@ def cb_upload_intimation(filename):
             ]
         )
 
-#### Choice of sheets if file is xlsx
+### Choice of sheets if file is xlsx
 @app.callback([Output('select-sheet-div', 'style'),
                 Output('select-sheet', 'options')],
-              [Input('upload-data', 'filename')])
-def cb_sheet_dropdown(filename):
+              [Input('upload-data', 'filename'),
+              Input('upload-data', 'contents')])
+def cb_sheet_dropdown(filename, contents):
     if filename is not None and 'xls' in filename.lower():
-        file_ = xlrd.open_workbook(filename, on_demand=True)
-        options = [{"label" : sheet, "value" : sheet} for sheet in file_.sheet_names()]
+        content_type, content_string = contents.split(',')
+        decoded = base64.b64decode(content_string)
+        file_ = pd.ExcelFile(io.BytesIO(decoded))
+        options = [{"label" : sheet, "value" : sheet} for sheet in file_.sheet_names]
         return {'display': 'inline'}, options
     else:
         return {'display': 'none'}, []
@@ -80,12 +83,12 @@ global clicks
 clicks = 1
 
 @app.callback(Output('output-report', 'children'),
-              [Input('upload-data', 'contents'),
-              Input('analyze-button', 'n_clicks'),
+              [Input('analyze-button', 'n_clicks'),
               Input('skiprows', 'value'),
-              Input('select-sheet', 'value')],
+              Input('select-sheet', 'value'),
+              Input('upload-data', 'contents')],
               [State('upload-data', 'filename')])
-def cb_create_report(contents, n_clicks, skiprows, sheet_name, filename):
+def cb_create_report(n_clicks, skiprows, sheet_name, contents, filename):
     global clicks
 
     if contents is not None and filename is not None and n_clicks is not None and clicks == n_clicks:
