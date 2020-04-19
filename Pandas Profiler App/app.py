@@ -14,6 +14,8 @@ import xlrd
 import datetime
 import io
 import os
+import string
+import random
 
 from layout import layout
 from callbacks import *
@@ -62,20 +64,21 @@ def cb_button_active(filename):
 
 #### Download report
 
-@server.route("/download")
+@server.route("/_intermediate/<path:path>")
 @cache.memoize(timeout=0)
-def download():
+def download(path):
     """Serve a file from the upload directory."""
-    return send_file("_intermediate/report.html", as_attachment=True,
+    return send_from_directory("_intermediate", path, as_attachment=True,
             cache_timeout = 0)
 
 @app.callback(Output('download-button', 'href'),
-              [Input('analyze-button', 'n_clicks')])
-def cb_download_report(n_clicks):
-    if n_clicks is not None:
-        send_file("_intermediate/report.html", as_attachment=True,
-            cache_timeout = 0)
-        return "/download"
+              [Input('analyze-button', 'n_clicks'),
+              Input('memory-output', 'data')])
+def cb_download_report(n_clicks, data):
+    if n_clicks is not None and data.get('filename') is not None:
+        # send_file("_intermediate/report.html", as_attachment=True,
+        #     cache_timeout = 0)
+        return "/_intermediate/{}".format(urlquote(data.get('filename')))
 
 ##### Spinner callback
 # @app.callback(Output('output-report', 'children'),
@@ -88,18 +91,33 @@ def cb_download_report(n_clicks):
 global clicks 
 clicks = 1
 
+# @app.callback(Output('memory-output', 'data'),
+#             [Input('analyze-button', 'n_clicks')],
+#             [State('memory-output', 'data')])
+# def on_click(n_clicks, data):
+#     if data is None:
+#         data = {}
+#     if data.get('clicks') is not None:
+#         data['clicks'] += 1
+#     else:
+#         data['clicks'] = 1
+#     return data
+
 @app.callback([Output('output-report', 'children'),
             Output('memory-output', 'data')],
               [Input('analyze-button', 'n_clicks'),
               Input('skiprows', 'value'),
               Input('select-sheet', 'value'),
               Input('upload-data', 'contents')],
-              [State('upload-data', 'filename')])
-def cb_create_report(n_clicks, skiprows, sheet_name, contents, filename):
-    global clicks
+              [State('upload-data', 'filename'),
+              State('memory-output', 'data')])
+def cb_create_report(n_clicks, skiprows, sheet_name, contents, filename, data):
+    if data is None:
+        data = {}
+        data['clicks'] = 1
 
-    if contents is not None and filename is not None and n_clicks is not None and clicks == n_clicks:
-        clicks += 1
+    if contents is not None and filename is not None and n_clicks is not None and data['clicks'] == n_clicks:
+        data['clicks'] += 1
 
         content_type, content_string = contents.split(',')
 
@@ -123,21 +141,21 @@ def cb_create_report(n_clicks, skiprows, sheet_name, contents, filename):
 
             else:
                 valid = False
+                print (data, n_clicks)
                 return html.Div([
                 'There was an error processing this file.'
-            ]), 0
+            ]), data
 
             if valid:
                 report = create_report(df).to_html()
-                buffer = io.StringIO()
-                buffer.write(report)
-                buffer.seek(0)
-                data = {'download': report}
+                lettersAndDigits = string.ascii_letters + string.digits
+                file_name = 'report_'+"".join(random.sample(lettersAndDigits, 6))+'.html'
+                data['filename'] = file_name
                 
-                with open('_intermediate/report.html', 'w') as file:
+                with open('_intermediate/'+ file_name, 'w') as file:
                     file.write(report)
                     file.close()
-
+                print (data, n_clicks)
                 return html.Iframe(srcDoc = report,
                 style={
                     'width': '100%',
@@ -152,12 +170,14 @@ def cb_create_report(n_clicks, skiprows, sheet_name, contents, filename):
 
         except Exception as e:
             print(e)
+            print (data, n_clicks)
             return html.Div([
                 'There was an error processing this file.'
-            ]), 0
+            ]), data
         
     else:
-        return None, None
+        print (data, n_clicks)
+        return None, data
 
 if __name__ == '__main__':
     app.run_server(debug=True,host='0.0.0.0',port=int(os.environ.get('PORT', 8080)))

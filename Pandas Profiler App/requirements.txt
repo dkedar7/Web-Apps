@@ -5,3 +5,4 @@ dash
 pandas_profiling
 dash_bootstrap_components
 xlrd
+flask_caching
