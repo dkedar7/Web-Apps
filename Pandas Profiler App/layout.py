@@ -11,9 +11,11 @@ import dash_bootstrap_components as dbc
 
 ####### Header #######
 header = dbc.Col([
-            html.H1('Get an instant data analysis report of your spreadsheets', style={'text-align':'center', "color":"white",
+            html.H1('Get an instant data analysis report of your spreadsheets', 
+            style={'text-align':'center', "color":"white",
                 "font-family": "Verdana; Gill Sans"}),
-            html.H3('Using the powerful Pandas Profiling library on Python', style={'text-align':'center', "color":"white",
+            html.H3('Using the powerful Pandas Profiling library on Python', 
+            style={'text-align':'center', "color":"white",
                 "font-family": "Verdana; Gill Sans"})
             ])
 
@@ -37,7 +39,6 @@ upload_button = dbc.Col([
             ])
 
 ####### Parameter control #######
-
 parameters = dbc.Col(
     [
         dbc.FormGroup(
@@ -89,7 +90,7 @@ report_iframe = dbc.Col(id='output-report',
 ####### Layout #######
 
 layout = dbc.Container([
-    # dcc.Store(id='memory-output'),
+    dcc.Store(id='memory-output'),
     dbc.Row(
         [
             header
