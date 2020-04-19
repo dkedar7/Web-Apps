@@ -6,7 +6,8 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from urllib.parse import quote as urlquote
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, send_file
+from flask_caching import Cache
 
 import base64
 import xlrd
@@ -22,6 +23,7 @@ external_stylesheets = [dbc.themes.BOOTSTRAP, 'https://codepen.io/chriddyp/pen/b
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = layout
 server = app.server
+cache = Cache(app.server)
 app.title = "Data Analyzer"
 
 #### File upload intimation
@@ -36,14 +38,17 @@ def cb_upload_intimation(filename):
             ]
         )
 
-#### Choice of sheets if file is xlsx
+### Choice of sheets if file is xlsx
 @app.callback([Output('select-sheet-div', 'style'),
                 Output('select-sheet', 'options')],
-              [Input('upload-data', 'filename')])
-def cb_sheet_dropdown(filename):
+              [Input('upload-data', 'filename'),
+              Input('upload-data', 'contents')])
+def cb_sheet_dropdown(filename, contents):
     if filename is not None and 'xls' in filename.lower():
-        file_ = xlrd.open_workbook(filename, on_demand=True)
-        options = [{"label" : sheet, "value" : sheet} for sheet in file_.sheet_names()]
+        content_type, content_string = contents.split(',')
+        decoded = base64.b64decode(content_string)
+        file_ = pd.ExcelFile(io.BytesIO(decoded))
+        options = [{"label" : sheet, "value" : sheet} for sheet in file_.sheet_names]
         return {'display': 'inline'}, options
     else:
         return {'display': 'none'}, []
@@ -58,14 +63,18 @@ def cb_button_active(filename):
 #### Download report
 
 @server.route("/download")
+@cache.memoize(timeout=0)
 def download():
     """Serve a file from the upload directory."""
-    return send_from_directory("_intermediate", "report.html", as_attachment=True)
+    return send_file("_intermediate/report.html", as_attachment=True,
+            cache_timeout = 0)
 
 @app.callback(Output('download-button', 'href'),
               [Input('analyze-button', 'n_clicks')])
 def cb_download_report(n_clicks):
     if n_clicks is not None:
+        send_file("_intermediate/report.html", as_attachment=True,
+            cache_timeout = 0)
         return "/download"
 
 ##### Spinner callback
@@ -73,19 +82,20 @@ def cb_download_report(n_clicks):
 #                 [Input('analyze-button', 'n_clicks')])
 # def cb_report_loading(n_clicks):
 #     if n_clicks is not None:
-#         return 
+#         return
 
 #### Show report
 global clicks 
 clicks = 1
 
-@app.callback(Output('output-report', 'children'),
-              [Input('upload-data', 'contents'),
-              Input('analyze-button', 'n_clicks'),
+@app.callback([Output('output-report', 'children'),
+            Output('memory-output', 'data')],
+              [Input('analyze-button', 'n_clicks'),
               Input('skiprows', 'value'),
-              Input('select-sheet', 'value')],
+              Input('select-sheet', 'value'),
+              Input('upload-data', 'contents')],
               [State('upload-data', 'filename')])
-def cb_create_report(contents, n_clicks, skiprows, sheet_name, filename):
+def cb_create_report(n_clicks, skiprows, sheet_name, contents, filename):
     global clicks
 
     if contents is not None and filename is not None and n_clicks is not None and clicks == n_clicks:
@@ -115,11 +125,15 @@ def cb_create_report(contents, n_clicks, skiprows, sheet_name, filename):
                 valid = False
                 return html.Div([
                 'There was an error processing this file.'
-            ])
+            ]), 0
 
             if valid:
                 report = create_report(df).to_html()
-
+                buffer = io.StringIO()
+                buffer.write(report)
+                buffer.seek(0)
+                data = {'download': report}
+                
                 with open('_intermediate/report.html', 'w') as file:
                     file.write(report)
                     file.close()
@@ -134,13 +148,16 @@ def cb_create_report(contents, n_clicks, skiprows, sheet_name, filename):
                     'borderRadius': '5px',
                     'textAlign': 'center',
                     'margin': '10px'
-                })
+                }), data
 
         except Exception as e:
             print(e)
             return html.Div([
                 'There was an error processing this file.'
-            ])
+            ]), 0
+        
+    else:
+        return None, None
 
 if __name__ == '__main__':
     app.run_server(debug=True,host='0.0.0.0',port=int(os.environ.get('PORT', 8080)))
