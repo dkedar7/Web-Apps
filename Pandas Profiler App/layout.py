@@ -95,7 +95,7 @@ layout = dbc.Container([
         [
             header
         ]
-   ,style ={"padding":"5% 0% 5% 0%", "background-color":"#3CB371"}
+   ,style ={"padding":"5% 0% 5% 0%", "background-color":"#40587C"}
     ),
     dbc.Row(
         [
