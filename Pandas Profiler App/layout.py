@@ -105,9 +105,13 @@ layout = dbc.Container([
     dbc.Row(id="upload_intimation"),
     dbc.Row(
         [
-            parameters,
+            parameters
+        ]
+    ),
+    dbc.Row(
+        [
             report_iframe
         ]
-    )  
+    )
 ]
-, fluid = True)
+, fluid = False)
