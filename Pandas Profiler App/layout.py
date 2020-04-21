@@ -107,7 +107,7 @@ layout = dbc.Container([
         [
             parameters
         ]
-    ),
+    , justify = 'center'),
     dbc.Row(
         [
             report_iframe
