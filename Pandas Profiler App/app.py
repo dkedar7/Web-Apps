@@ -76,8 +76,6 @@ def download(path):
               Input('memory-output', 'data')])
 def cb_download_report(n_clicks, data):
     if n_clicks is not None and data.get('filename') is not None:
-        # send_file("_intermediate/report.html", as_attachment=True,
-        #     cache_timeout = 0)
         return "/_intermediate/{}".format(urlquote(data.get('filename')))
 
 ##### Spinner callback
@@ -88,20 +86,6 @@ def cb_download_report(n_clicks, data):
 #         return
 
 #### Show report
-global clicks 
-clicks = 1
-
-# @app.callback(Output('memory-output', 'data'),
-#             [Input('analyze-button', 'n_clicks')],
-#             [State('memory-output', 'data')])
-# def on_click(n_clicks, data):
-#     if data is None:
-#         data = {}
-#     if data.get('clicks') is not None:
-#         data['clicks'] += 1
-#     else:
-#         data['clicks'] = 1
-#     return data
 
 @app.callback([Output('output-report', 'children'),
             Output('memory-output', 'data')],
