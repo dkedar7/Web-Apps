@@ -5,9 +5,25 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 
+from app import app
 
 ####### NavBar #######
-# nav_bar = 
+navbar = dbc.Container(
+    dbc.Row(
+        dbc.Col(
+            html.P(
+                [
+                    html.Span('Your Name', className='mr-2'), 
+                    html.A(html.I(className='fas fa-envelope-square mr-1'), href='mailto:<you>@<provider>.com'), 
+                    html.A(html.I(className='fab fa-github-square mr-1'), href='https://github.com/<you>/<repo>'), 
+                    html.A(html.I(className='fab fa-linkedin mr-1'), href='https://www.linkedin.com/in/<you>/'), 
+                    html.A(html.I(className='fab fa-twitter-square mr-1'), href='https://twitter.com/<you>'), 
+                ], 
+                className='lead'
+            )
+        )
+    )
+)
 
 ####### Header #######
 header = dbc.Col([
@@ -91,6 +107,17 @@ report_iframe = dbc.Col(id='output-report',
 
 layout = dbc.Container([
     dcc.Store(id='memory-output', storage_type='memory'),
+    # dbc.Row(
+    #     [
+    #         dbc.Col(
+    #             [
+                    navbar
+    #             ]
+    #         )
+    #     ]
+    # ,style ={"padding":"0% 0% 0% 0%", "background-color":"#40587C"}
+    # )
+    ,
     dbc.Row(
         [
             header
