@@ -8,21 +8,33 @@ import dash_bootstrap_components as dbc
 from app import app
 
 ####### NavBar #######
-navbar = dbc.Container(
-    dbc.Row(
-        dbc.Col(
-            html.P(
-                [
-                    html.Span('Your Name', className='mr-2'), 
-                    html.A(html.I(className='fas fa-envelope-square mr-1'), href='mailto:<you>@<provider>.com'), 
-                    html.A(html.I(className='fab fa-github-square mr-1'), href='https://github.com/<you>/<repo>'), 
-                    html.A(html.I(className='fab fa-linkedin mr-1'), href='https://www.linkedin.com/in/<you>/'), 
-                    html.A(html.I(className='fab fa-twitter-square mr-1'), href='https://twitter.com/<you>'), 
-                ], 
-                className='lead'
-            )
-        )
-    )
+navbar = dbc.NavbarSimple(
+    children=[
+        html.Span(
+            [
+                html.A(
+                    html.I(className = "fa-2x fab fa-github", style={'color':'#ffffff'}),
+                href = "https://github.com/dkedar7/Web-Apps/tree/master/Pandas%20Profiler%20App", target="_blank",
+                className="footer-social-icons mr-3"
+                    ),
+                    html.A(
+                    html.I(className = "fa-2x fab fa-twitter-square", style={'color':'#ffffff'}),
+                href = "https://www.twitter.com/dkedar7/", target="_blank",
+                className="footer-social-icons mr-3"
+                    ),
+                    html.A(
+                    html.I(className = "fa-2x fab fa-linkedin", style={'color':'#ffffff'}),
+                href = "https://www.linkedin.com/in/dkedar7/", target="_blank",
+                className="footer-social-icons mr-3"
+                    )
+            ]
+        ),
+    ],
+    brand="Data Analyzer",
+    brand_href=None,
+    color="#40587C",
+    dark=True,
+    style = {"font-size":"18"}
 )
 
 ####### Header #######
@@ -107,17 +119,16 @@ report_iframe = dbc.Col(id='output-report',
 
 layout = dbc.Container([
     dcc.Store(id='memory-output', storage_type='memory'),
-    # dbc.Row(
-    #     [
-    #         dbc.Col(
-    #             [
+    dbc.Row(
+        [
+            dbc.Col(
+                [
                     navbar
-    #             ]
-    #         )
-    #     ]
-    # ,style ={"padding":"0% 0% 0% 0%", "background-color":"#40587C"}
-    # )
-    ,
+                ]
+            )
+        ]
+    ,style ={"padding":"0% 0% 0% 0%", "background-color":"#40587C"}
+    ),
     dbc.Row(
         [
             header
