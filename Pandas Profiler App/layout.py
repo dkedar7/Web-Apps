@@ -34,7 +34,7 @@ navbar = dbc.NavbarSimple(
     brand_href=None,
     color="#40587C",
     dark=True,
-    style = {"font-size":"18", "padding":"0% 0% 0% 0%"}
+    style = {"font-size":"18", "padding":"2% 0% 0% 0%"}
 )
 
 ####### Header #######
@@ -46,7 +46,7 @@ header = dbc.Col([
             style={'text-align':'center', "color":"white",
                 "font-family": "Verdana; Gill Sans"})
             ],
-            style ={"padding":"5% 0% 5% 0%", "background-color":"#40587C"})
+            style ={"padding":"5% 2% 5% 2%", "background-color":"#40587C"})
 
 ####### Upload button #######
 upload_button = dbc.Col([
@@ -187,4 +187,4 @@ layout = dbc.Container([
     ),
     footer
 ],
-    fluid = False)
+    fluid = True)
