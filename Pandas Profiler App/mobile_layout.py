@@ -13,19 +13,19 @@ navbar = dbc.NavbarSimple(
         html.Span(
             [
                 html.A(
-                    html.I(className = "fa-2x fab fa-github", style={'color':'#ffffff'}),
+                    html.I(className = "fa-3x fab fa-github", style={'color':'#ffffff'}),
                 href = "https://github.com/dkedar7/Web-Apps/tree/master/Pandas%20Profiler%20App", target="_blank",
-                className="footer-social-icons mr-3"
+                className="mx-3"
                     ),
                     html.A(
-                    html.I(className = "fa-2x fab fa-twitter-square", style={'color':'#ffffff'}),
+                    html.I(className = "fa-3x fab fa-twitter-square", style={'color':'#ffffff'}),
                 href = "https://www.twitter.com/dkedar7/", target="_blank",
-                className="footer-social-icons mr-3"
+                className="mx-3"
                     ),
                     html.A(
-                    html.I(className = "fa-2x fab fa-linkedin", style={'color':'#ffffff'}),
+                    html.I(className = "fa-3x fab fa-linkedin", style={'color':'#ffffff'}),
                 href = "https://www.linkedin.com/in/dkedar7/", target="_blank",
-                className="footer-social-icons mr-3"
+                className="mx-3"
                     )
             ]
         ),
@@ -34,14 +34,16 @@ navbar = dbc.NavbarSimple(
     brand_href=None,
     color="#40587C",
     dark=True,
-    style = {"font-size":"25px", "padding":"2% 0% 0% 0%"}
+    brand_style = {"font-size":"35px"},
+    style = {"padding":"2% 0% 0% 0%"}
 )
 
 ####### Header #######
 header = dbc.Col([
             html.H1('Get an instant data analysis report of your spreadsheets', 
             style={'text-align':'center', "color":"white",
-                "font-family": "Verdana; Gill Sans", "font-size": "75px"}),
+                "font-family": "Verdana; Gill Sans", "font-size": "75px",
+                "padding":"0% 0% 2% 0%"}),
             html.H3('Using the powerful Pandas Profiling library on Python', 
             style={'text-align':'center', "color":"white",
                 "font-family": "Verdana; Gill Sans", "font-size":"30px"})
@@ -53,7 +55,9 @@ upload_button = dbc.Col([
                 dcc.Upload(
         id='upload-data',
         children=dbc.Col([
-            html.A('Select Files', style = {"font-size" : "45px"})
+            html.A('Select spreadsheet',
+            style = {"font-family": "Verdana; Gill Sans",
+            "font-size":"40px"})
         ]),
         style={
             'lineHeight': '60px',
@@ -74,26 +78,28 @@ parameters = dbc.Col(
                 html.Div(id="select-sheet-div",
                     children=
                     [
-                        dbc.Label('Select sheet'),
-                        dcc.Dropdown(id="select-sheet")
+                        dbc.Label('Select sheet', style = {"font-size":"30px"}),
+                        dcc.Dropdown(id="select-sheet", style = {"font-size":"30px"})
                     ],
                     style= {'display': 'none'}
                 ),
-                dbc.Label('Skip rows'),
+                dbc.Label('Skip rows', style = {"font-size" : "30px"}),
                 dcc.Dropdown(id="skiprows",
                     options = [{"label" : rows, "value" : rows} for rows in range(1,11)],
-                                value = 0
+                                value = 0,
+                                style = {"font-size" : "30px"}
                             ),
 
                 dbc.Button("Analyze", id = 'analyze-button', size="lg",
                     color="primary", disabled = False,
-                    className = "mt-3 mr-3"),
+                    className = "mt-3 mx-auto", style = {"font-size":"30px"}),
 
                 dbc.Button("Download Report", id = 'download-button', size="lg",
                     color="primary", disabled = False,
-                    className = "mt-3 mr-3", href = "", external_link=True)
+                    className = "mt-3 mr-3", href = "", external_link=True, 
+                    style = {"font-size":"30px"})
             ]
-        )
+        , style = {"justify-content":"center"}, className = "mx-auto")
     ],
     width = 4
 )
@@ -146,7 +152,26 @@ footer = dbc.Row(
             width={"size" : 3, "offset":1}
         ),
     ],
-    style ={"background-color":"#40587C", "padding" : "2% 0% 0% 2%"}
+    style ={"background-color":"#40587C", 
+    "padding" : "2% 0% 0% 2%"}
+)
+
+footer2 = dbc.Row(
+    [
+        dbc.Col(
+            [
+                html.A('Pandas Profiling', href = "#", className = "mx-3", style = {"font-size":"25px"}),
+                html.A(
+                        html.I(className = "fa-3x fab fa-linkedin", style={'color':'#ffffff'}),
+                href = "https://www.linkedin.com/in/dkedar7/", target="_blank"
+                )
+            ]
+        )
+    ],
+    style ={"background-color":"#40587C", 
+    "padding" : "2% 0% 0% 2%",
+    "vertical-spacing":"middle",
+    "horizontal-spacing":"center"}
 )
 
 ####### Layout #######
@@ -173,7 +198,7 @@ layout = dbc.Container([
             upload_button
         ]
     ),
-    dbc.Row(id="upload_intimation"),
+    dbc.Row(id="upload_intimation", style = {"font-size":"30px"}),
     dbc.Row(
         [
             parameters
@@ -184,6 +209,6 @@ layout = dbc.Container([
             report_iframe
         ]
     ),
-    footer
+    footer2
 ],
     fluid = True)
