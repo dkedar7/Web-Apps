@@ -15,11 +15,12 @@ import os
 import string
 import random
 
-from layout import layout
+from desktop_layout import layout as desktop_layout
+from mobile_layout import layout as mobile_layout
 from callbacks import *
 from app import app, server, cache
 
-app.layout = layout
+app.layout = mobile_layout
 
 
 #### File upload intimation
