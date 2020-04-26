@@ -31,7 +31,7 @@ with app.server.test_request_context('/'):
 mobile_string = "(?i)android|fennec|iemobile|iphone|opera (?:mini|mobi)|mobile"
 re_mobile = re.compile(mobile_string)
 is_mobile = len(re_mobile.findall(agent)) > 0
-§s
+
 if is_mobile:
     app.layout = mobile_layout
     print ('mobile')
