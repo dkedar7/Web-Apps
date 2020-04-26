@@ -7,6 +7,7 @@ from dash.dependencies import Input, Output, State
 from urllib.parse import quote as urlquote
 import flask
 from flask import Flask, send_from_directory, send_file, request, session
+import requests
 
 import base64
 import xlrd
@@ -24,13 +25,13 @@ from app import app, server, cache
 
 ### Choose mobile or desktop
 
-agent = request.headers.get('User_agent')
-print (request.path)
+with app.server.test_request_context('/'):
+    agent = request.headers.get('User_agent')
 
 mobile_string = "(?i)android|fennec|iemobile|iphone|opera (?:mini|mobi)|mobile"
 re_mobile = re.compile(mobile_string)
 is_mobile = len(re_mobile.findall(agent)) > 0
-
+§s
 if is_mobile:
     app.layout = mobile_layout
     print ('mobile')
