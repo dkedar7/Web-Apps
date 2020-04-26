@@ -15,17 +15,17 @@ navbar = dbc.NavbarSimple(
                 html.A(
                     html.I(className = "fa-2x fab fa-github", style={'color':'#ffffff'}),
                 href = "https://github.com/dkedar7/Web-Apps/tree/master/Pandas%20Profiler%20App", target="_blank",
-                className="footer-social-icons mr-3"
+                className="mr-3"
                     ),
                     html.A(
                     html.I(className = "fa-2x fab fa-twitter-square", style={'color':'#ffffff'}),
                 href = "https://www.twitter.com/dkedar7/", target="_blank",
-                className="footer-social-icons mr-3"
+                className="mr-3"
                     ),
                     html.A(
                     html.I(className = "fa-2x fab fa-linkedin", style={'color':'#ffffff'}),
                 href = "https://www.linkedin.com/in/dkedar7/", target="_blank",
-                className="footer-social-icons mr-3"
+                className="mr-3"
                     )
             ]
         ),
@@ -67,6 +67,35 @@ upload_button = dbc.Col([
     ),
             ])
 
+####### Collapse button #######
+collapse_button = dbc.Row(
+    dbc.Button(
+            "Learn how",
+            id="collapse-button",
+            className="mb-3",
+            color="primary",
+        ),
+        justify = 'center', style ={"background-color":"#40587C"}
+)
+
+steps = ["Step 1. Click on the 'Select Spreadsheet' button to upload a .xlsx, .xls or a .csv spreadsheet",
+html.Br(),
+"Step 2. If you upload a .xlsx or .xls spreadsheet, the app will ask you which sheet you want to analyze",
+html.Br(),
+"Step 3. Select 'Skip rows' - How many rows from the top the app should skip to read the actual table",
+html.Br(),
+'Step 4. Click on "Analyze"',
+html.Br(),
+"Step 5. Download the analysis as a .html report"]
+
+collapse_card = dbc.Row(
+    dbc.Collapse(
+            dbc.Card(dbc.CardBody(steps)),
+            id="collapse",
+                ),
+        justify = 'center'
+)
+
 ####### Parameter control #######
 parameters = dbc.Col(
     [
@@ -107,7 +136,6 @@ report_iframe = dbc.Col(id='output-report',
         style={'width': '80%',
             'height': '800px',
             'lineHeight': '60px',
-            'borderWidth': '1px',
             'borderWidth': '1px',
             'borderRadius': '5px',
             'textAlign': 'center',
@@ -169,6 +197,8 @@ layout = dbc.Container([
             header
         ]
     ),
+    collapse_button,
+    collapse_card,
     dbc.Row(
         [
             upload_button

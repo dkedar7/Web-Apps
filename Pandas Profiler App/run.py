@@ -5,7 +5,8 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from urllib.parse import quote as urlquote
-from flask import Flask, send_from_directory, send_file
+import flask
+from flask import Flask, send_from_directory, send_file, request, session
 
 import base64
 import xlrd
@@ -14,14 +15,29 @@ import io
 import os
 import string
 import random
+import re
 
 from desktop_layout import layout as desktop_layout
 from mobile_layout import layout as mobile_layout
 from callbacks import *
 from app import app, server, cache
 
-app.layout = mobile_layout
+### Choose mobile or desktop
 
+agent = request.headers.get('User_agent')
+print (request.path)
+
+mobile_string = "(?i)android|fennec|iemobile|iphone|opera (?:mini|mobi)|mobile"
+re_mobile = re.compile(mobile_string)
+is_mobile = len(re_mobile.findall(agent)) > 0
+
+if is_mobile:
+    app.layout = mobile_layout
+    print ('mobile')
+else:
+    app.layout = desktop_layout
+
+# app.layout = mobile_layout
 
 #### File upload intimation
 @app.callback(Output('upload_intimation', 'children'),
@@ -85,18 +101,6 @@ def cb_download_report(n_clicks, data):
 #### Show report
 global clicks 
 clicks = 1
-
-# @app.callback(Output('memory-output', 'data'),
-#             [Input('analyze-button', 'n_clicks')],
-#             [State('memory-output', 'data')])
-# def on_click(n_clicks, data):
-#     if data is None:
-#         data = {}
-#     if data.get('clicks') is not None:
-#         data['clicks'] += 1
-#     else:
-#         data['clicks'] = 1
-#     return data
 
 @app.callback([Output('output-report', 'children'),
             Output('memory-output', 'data')],
@@ -174,5 +178,16 @@ def cb_create_report(n_clicks, skiprows, sheet_name, contents, filename, data):
         print (data, n_clicks)
         return None, data
 
+##### Calback for collapse #####
+@app.callback(
+    Output("collapse", "is_open"),
+    [Input("collapse-button", "n_clicks")],
+    [State("collapse", "is_open")],
+)
+def toggle_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+
 if __name__ == '__main__':
-    app.run_server(debug=True,host='0.0.0.0',port=int(os.environ.get('PORT', 8080)))
+    app.run_server(debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
