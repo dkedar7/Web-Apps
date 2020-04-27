@@ -23,22 +23,7 @@ from mobile_layout import layout as mobile_layout
 from callbacks import *
 from app import app, server, cache
 
-### Choose mobile or desktop
-
-with app.server.test_request_context('/'):
-    agent = request.headers.get('User_agent')
-
-mobile_string = "(?i)android|fennec|iemobile|iphone|opera (?:mini|mobi)|mobile"
-re_mobile = re.compile(mobile_string)
-is_mobile = len(re_mobile.findall(agent)) > 0
-
-if is_mobile:
-    app.layout = mobile_layout
-    print ('mobile')
-else:
-    app.layout = desktop_layout
-
-# app.layout = mobile_layout
+app.layout = mobile_layout
 
 #### File upload intimation
 @app.callback(Output('upload_intimation', 'children'),
@@ -91,13 +76,6 @@ def cb_download_report(n_clicks, data):
         # send_file("_intermediate/report.html", as_attachment=True,
         #     cache_timeout = 0)
         return "/_intermediate/{}".format(urlquote(data.get('filename')))
-
-##### Spinner callback
-# @app.callback(Output('output-report', 'children'),
-#                 [Input('analyze-button', 'n_clicks')])
-# def cb_report_loading(n_clicks):
-#     if n_clicks is not None:
-#         return
 
 #### Show report
 global clicks 
