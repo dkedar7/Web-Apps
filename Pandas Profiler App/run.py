@@ -23,13 +23,8 @@ from mobile_layout import layout as mobile_layout
 from callbacks import *
 from app import app, server, cache, register_before_request
 
+app.layout = desktop_layout
 register_before_request(app)
-
-with app.server.test_request_context():
-    print (request.headers)
-    print (_request_ctx_stack.top.request.user_agent)
-
-app.layout = mobile_layout
 
 #### File upload intimation
 @app.callback(Output('upload_intimation', 'children'),
@@ -175,4 +170,4 @@ def toggle_collapse(n, is_open):
     return is_open
 
 if __name__ == '__main__':
-    app.server.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+    app.server.run(debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
