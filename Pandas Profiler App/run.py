@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from urllib.parse import quote as urlquote
 import flask
-from flask import Flask, send_from_directory, send_file, request, session
+from flask import Flask, send_from_directory, send_file, request, session, _request_ctx_stack
 import requests
 
 import base64
@@ -21,7 +21,13 @@ import re
 from desktop_layout import layout as desktop_layout
 from mobile_layout import layout as mobile_layout
 from callbacks import *
-from app import app, server, cache
+from app import app, server, cache, register_before_request
+
+register_before_request(app)
+
+with app.server.test_request_context():
+    print (request.headers)
+    print (_request_ctx_stack.top.request.user_agent)
 
 app.layout = mobile_layout
 
@@ -169,4 +175,4 @@ def toggle_collapse(n, is_open):
     return is_open
 
 if __name__ == '__main__':
-    app.run_server(debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+    app.server.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
