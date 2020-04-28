@@ -5,7 +5,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 
-from app import app
+# from app import app
 
 ####### NavBar #######
 navbar = dbc.NavbarSimple(
@@ -97,7 +97,10 @@ collapse_card = dbc.Row(
 )
 
 ####### Parameter control #######
-parameters = dbc.Col(
+parameters = [
+    dbc.Row(
+    [
+        dbc.Col(
     [
         dbc.FormGroup(
             [
@@ -113,20 +116,31 @@ parameters = dbc.Col(
                 dcc.Dropdown(id="skiprows",
                     options = [{"label" : rows, "value" : rows} for rows in range(1,11)],
                                 value = 0
-                            ),
-
-                dbc.Button("Analyze", id = 'analyze-button', size="lg",
-                    color="primary", disabled = False,
-                    className = "mt-3 mr-3"),
-
-                dbc.Button("Download Report", id = 'download-button', size="lg",
-                    color="primary", disabled = False,
-                    className = "mt-3 mr-3", href = "", external_link=True)
+                            )
             ]
         )
+    ]
+        )
     ],
-    width = 4
+    justify = 'center'
+),
+dbc.Row(
+    [
+        dbc.Button("Analyze", id = 'analyze-button', size="md",
+        color="primary", disabled = False,
+        className = "mt-3 mx-auto")
+    ],
+    justify = 'center'
+),
+dbc.Row(
+    [
+        dbc.Button("Download Report", id = 'download-button', size="md",
+        color="primary", disabled = False,
+        className = "mt-3 mr-3", href = "", external_link=True)
+    ],
+    justify = 'center'
 )
+]
 
 ####### Analysis report iframe #######
 
@@ -205,11 +219,9 @@ layout = dbc.Container([
         ]
     ),
     dbc.Row(id="upload_intimation"),
-    dbc.Row(
-        [
-            parameters
-        ]
-    , justify = 'center'),
+    dbc.Container(
+        parameters
+    ),
     dbc.Row(
         [
             report_iframe
