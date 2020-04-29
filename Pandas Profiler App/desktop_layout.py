@@ -163,10 +163,19 @@ footer = dbc.Row(
         dbc.Col(
             [
                 html.P(
+                [
+                    """
+                    This application uses open-source work from 
+                """,
+                html.A(
+                    html.U("Pandas Profiling"), 
+                href = "https://github.com/pandas-profiling/pandas-profiling",
+                target = "_blank",
+                style = {"color":"white"}),
                 """
-                    Data Analysis report credits go to Pandas Profiling, an open-source
-                    project to generate reports from Pandas dataframes. For more information,
-                    check out the official project GitHub page.""",
+                , a project to generate reports from Pandas dataframes.
+                """
+                ],
                 style = {"color":"white"}
             )
             ],
