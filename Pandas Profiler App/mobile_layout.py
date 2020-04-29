@@ -174,7 +174,8 @@ footer = dbc.Row(
                 html.A(
                     html.U("Pandas Profiling"), 
                 href = "https://github.com/pandas-profiling/pandas-profiling",
-                target = "_blank"),
+                target = "_blank",
+                style = {"color":"white"}),
                 """
                 , a project to generate reports from Pandas dataframes.
                 """
