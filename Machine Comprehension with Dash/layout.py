@@ -26,7 +26,7 @@ body_paragraph = dbc.Row(
                     [
                     "Welcome to my Machine Comprehension web application. ",
                     html.Br(),
-                    "See how a modern Machine Learning model answers questions from a passage."
+                    "See how a modern Machine Learning model finds answers in a passage."
                     ]
                 )
             ]
