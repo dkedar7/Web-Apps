@@ -44,8 +44,8 @@ def get_prediction(context, query, n_clicks, data):
         data['clicks'] = 1
         return [''], data
 
-    if n_clicks and data['clicks'] == n_clicks:
-        data['clicks'] += 1
+    if n_clicks and data['clicks'] <= n_clicks:
+        data['clicks'] = n_clicks + 1
         return [answer(context, query)], data
 
     else:
