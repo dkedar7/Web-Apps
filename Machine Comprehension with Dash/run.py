@@ -9,10 +9,20 @@ import os
 from app import app, server
 from layout import layout
 from model import answer
+from passages import passages
 
 app.layout = layout
 
 ## Write callbacks
+
+### Select passage from dropdown
+@app.callback(
+    Output('input_text', 'value'),
+    [Input('passage_dropdown', 'value')]
+)
+def modify_input_text(dropdown_value):
+    if dropdown_value:
+        return passages.get(dropdown_value)        
 
 @app.callback(
     [
@@ -30,18 +40,15 @@ app.layout = layout
 )
 def get_prediction(context, query, n_clicks, data):
     if data is None:
-        print ('First if')
         data = {}
         data['clicks'] = 1
         return [''], data
 
     if n_clicks and data['clicks'] == n_clicks:
-        print ('Second if')
         data['clicks'] += 1
         return [answer(context, query)], data
 
     else:
-        print ('Else')
         print (data, n_clicks)
         return [''], data
 

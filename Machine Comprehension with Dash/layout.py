@@ -3,6 +3,8 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 
+from passages import passages
+
 ### Header
 
 ### Title
@@ -34,7 +36,20 @@ body_paragraph = dbc.Row(
 )
 
 ### Dropdown for selecting passages
-
+passage_dropdown = dbc.Row(
+    [
+        dbc.Col(
+            [
+                dcc.Dropdown(
+                    id='passage_dropdown',
+                    options=[{'label':key, 'value' : key} for key in passages],
+                    placeholder = 'Select a passage or write your own'
+            )
+            ]
+        )
+    ]
+)
+        
 ### Input text
 input_text = dbc.Row(
     [
@@ -43,7 +58,7 @@ input_text = dbc.Row(
                 dcc.Textarea(
                     id = "input_text",
                     placeholder =  "Input passage here",
-                    style = {'padding':'2% 0% 2% 0%',
+                    style = {'padding':'2% 1% 2% 1%',
                             'width': '100%', 
                             'height': 200}
 )
@@ -105,6 +120,7 @@ layout = dbc.Container(
         dcc.Store(id='memory-output', storage_type='memory'),
         header,
         body_paragraph,
+        passage_dropdown,
         input_text,
         input_question,
         submit_button,
