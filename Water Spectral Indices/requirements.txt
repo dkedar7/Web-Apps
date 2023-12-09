@@ -2,4 +2,5 @@ geemap==0.29.6
 spyndex==0.5.0
 gunicorn
 pandas
+python-dotenv
 fast-dash

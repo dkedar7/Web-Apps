@@ -4,10 +4,12 @@ import spyndex
 
 import datetime
 import pandas as pd
-from fast_dash import FastDash, Fastify, html, dbc, dmc, dash
+from dotenv import load_dotenv
+from fast_dash import FastDash, Fastify, html, dmc, dash
 
-email = "gee-service-account@gee-apps-404316.iam.gserviceaccount.com"
-credentials = ee.ServiceAccountCredentials(email, "gee-apps-404316-c120a5d5c32e.json")
+load_dotenv()
+
+credentials = ee.ServiceAccountCredentials(os.environ["SERVICE_ACCOUNT_EMAIL"], os.environ["CREDENTIALS_PATH"])
 ee.Initialize(credentials)
 
 
