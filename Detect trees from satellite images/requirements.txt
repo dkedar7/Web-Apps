@@ -1,0 +1,4 @@
+geemap==0.29.6
+gunicorn
+python-dotenv
+fast-dash
