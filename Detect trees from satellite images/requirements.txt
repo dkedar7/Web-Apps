@@ -1,4 +1,5 @@
-geemap==0.29.6
 gunicorn
 python-dotenv
+numpy
+requests
 fast-dash

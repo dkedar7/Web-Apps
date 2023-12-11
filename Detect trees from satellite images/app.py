@@ -25,7 +25,7 @@ def query(filename):
 
 # Build and deploy!
 # If running locally, feel free to drop the mode and port arguments.
-def detect_vegetation_from_satellite_images(upload_image: UploadImage = manhattan_scene) -> (Image, Image, str):
+def detect_vegetation_from_satellite_images(upload_image: UploadImage, or_select_an_example: str = ["Manhattan", "Oakland", "Cesario", "Artshack"]) -> (Image, Image, str):
     """
     Upload a satellite image and let this image segmentation model detect vegetation.\
     The model is a MaskFormer trained on a very small number (25) of manually labeled images.\
@@ -46,10 +46,16 @@ def detect_vegetation_from_satellite_images(upload_image: UploadImage = manhatta
     :return vegetation_percentage: The percentage of vegetation in the image.
     :rtype vegetation_percentage: str
     """
-
-    # Determine the format of the uploaded PIL image
-    format = upload_image.format
-    file_extension = ".jpg" if format == "JPEG" else ".png"
+    
+    if upload_image is None:
+        print (os.getcwd())
+        upload_image = PIL.Image.open(os.path.join(os.getcwd(), "examples", f"{or_select_an_example}.jpg"))
+        file_extension = ".jpg"
+        
+    else:
+        # Determine the format of the uploaded PIL image
+        format = upload_image.format
+        file_extension = ".jpg" if format == "JPEG" else ".png"
 
     with tempfile.NamedTemporaryFile(delete=True) as f:
         upload_image.save(f.name + file_extension)
